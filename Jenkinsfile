@@ -13,7 +13,7 @@ pipeline {
                 git credentialsId: 'github-credentials-id', url: 'https://github.com/your_username/your_repository.git'
             }
         }
-
+        
         stage('Install Dependencies 2472') {
             steps {
                 sh 'cd client && yarn install'
@@ -39,8 +39,8 @@ pipeline {
             steps {
                 script {
                     def imageNames = ['frontend', 'backend', 'classrooms']
-                    withCredentials([string(credentialsId: 'docker-hub-credentials-id', variable: 'DOCKER_HUB_PASSWORD')]) {
-                        sh 'echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_REPO --password-stdin'
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials-id', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                        sh 'echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin'
                         imageNames.each { name ->
                             sh """
                                 docker push $DOCKER_HUB_REPO/${name}:latest
